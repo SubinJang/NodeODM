@@ -86,7 +86,7 @@ module.exports = {
                         setTimeout(() => {
                             q.push(file, errHandler);
                             done();
-                        }, (2 ** file.retries) * 1000);
+                        }, (Math.pow(2, file.retries)) * 1000);
                     }else{
                         done(new Error(msg));
                     }

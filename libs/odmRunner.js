@@ -73,11 +73,23 @@ module.exports = {
         let childProcess = spawn(command, params, {cwd: config.odm_path});
 
         childProcess
-            .on('exit', (code, signal) => done(null, code, signal))
-            .on('error', done);
+            .on('exit', (code, signal) => {
+                logger.info(`===exit===code:${code}==signal:${signal}`);
+                done(null, code, signal);
+            })
+            .on('error', () => {
+                logger.info(`===error===`);
+                return done;
+            });
 
-        childProcess.stdout.on('data', chunk => outputReceived(chunk.toString()));
-        childProcess.stderr.on('data', chunk => outputReceived(chunk.toString()));
+        childProcess.stdout.on('data', chunk => {
+            logger.info(`===stdout===chunk:${chunk.toString()}`);
+            outputReceived(chunk.toString());
+        });
+        childProcess.stderr.on('data', chunk => {
+            logger.info(`===stderr===chunk:${chunk.toString()}`);
+            outputReceived(chunk.toString());
+        });
 
         return childProcess;
     },

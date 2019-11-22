@@ -166,6 +166,7 @@ module.exports = class Task{
         }
     }
 
+    // fucking progress
     updateProgress(globalProgress){
         globalProgress = Math.min(100, Math.max(0, globalProgress));
         
@@ -248,8 +249,10 @@ module.exports = class Task{
         };
         
         const postProcess = () => {
+            // fucking create zip file function
             const createZipArchive = (outputFilename, files) => {
                 return (done) => {
+                    // final complete console -> output fucking show zip file bulabula
                     this.output.push(`Compressing ${outputFilename}\n`);
 
                     let output = fs.createWriteStream(this.getAssetsArchivePath(outputFilename));
@@ -355,7 +358,8 @@ module.exports = class Task{
             if (this.outputs.length > 0) allPaths = this.outputs;
 
             let tasks = [];
-            
+
+            // test fucking go away
             if (config.test){
                 if (config.testSkipOrthophotos){
                     logger.info("Test mode will skip orthophoto generation");
@@ -438,13 +442,17 @@ module.exports = class Task{
             }
 
             this.runningProcesses.push(odmRunner.run(runnerOptions, this.uuid, (err, code, signal) => {
+                    logger.info("=================================OpenDroneMap Complete==================================================");
+                    logger.info(`output : ${this.output.toString()}`);
+                    logger.info(`code : ${code}`);
+                    logger.info(`code : ${signal}`);
                     if (err){
                         this.setStatus(statusCodes.FAILED, {errorMessage: `Could not start process (${err.message})`});
                         finished(err);
                     }else{
                         // Don't evaluate if we caused the process to exit via SIGINT?
                         if (this.status.code !== statusCodes.CANCELED){
-                            if (code === 0){
+                            if (code === 0){ // success
                                 postProcess();
                             }else{
                                 this.setStatus(statusCodes.FAILED, {errorMessage: `Process exited with code ${code}`});
